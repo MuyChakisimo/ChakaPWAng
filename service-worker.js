@@ -5,7 +5,7 @@ const FILES_TO_CACHE = [
   '/ChakaPWAng/manifest.json',
   '/ChakaPWAng/icon.png',
   '/ChakaPWAng/changelog.json',
-  '/ChakaPWAng/monkey.gif',
+  '/ChakaPWAng/monkey.GIF',
 ];
 
 self.addEventListener('install', event => {
