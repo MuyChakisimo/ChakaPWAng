@@ -7,12 +7,107 @@
   <link rel="manifest" href="/ChakaPWAng/manifest.json" />
   <link rel="icon" href="/ChakaPWAng/icon.png" />
   <title>MuyChakaApp</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #317EFB;
+      color: white;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+    }
+    #menuBtn {
+      font-size: 24px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    #notification {
+      background: red;
+      color: white;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 12px;
+      display: inline-block;
+      text-align: center;
+      line-height: 16px;
+      margin-left: 6px;
+    }
+    #menu {
+      background: #f0f0f0;
+      padding: 10px;
+      display: none;
+    }
+    #updates {
+      display: none;
+      padding: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome!</h1>
-  <p>Hit the share button & add to your home screen</p>
-  <p>App should still become available offline</p>
-  <p></p>
-  <p>🐵</p>
+  <header>
+    <div id="menuBtn">☰</div>
+    <h1>MuyChakaApp</h1>
+  </header>
+
+  <div id="menu">
+    <div onclick="showUpdates()">Updates
+      <span id="notification" style="display: none;">●</span>
+    </div>
+  </div>
+
+  <div id="content">
+    <p>Welcome!</p>
+    <p>Hit the share button & add to your home screen</p>
+    <p>App should still become available offline</p>
+    <p>🐵</p>
+  </div>
+
+  <div id="updates">
+    <h2>Update History</h2>
+    <div id="updateLog"></div>
+  </div>
+
+  <script>
+    // Toggle menu
+    document.getElementById('menuBtn').onclick = () => {
+      const menu = document.getElementById('menu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    };
+
+    // Show updates and hide badge
+    function showUpdates() {
+      document.getElementById('content').style.display = 'none';
+      document.getElementById('updates').style.display = 'block';
+      document.getElementById('notification').style.display = 'none';
+      localStorage.setItem('seenVersion', latestVersion); // mark as seen
+    }
+
+    // Simulate loading changelog
+    const latestVersion = '1.0.0'; // change this when you release
+    fetch('/ChakaPWAng/changelog.json')
+      .then(res => res.json())
+      .then(data => {
+        const log = data.changelog.map(item => `
+          <h3>Version ${item.version}</h3>
+          <ul>
+            ${item.added ? `<li><strong>Added:</strong> ${item.added}</li>` : ''}
+            ${item.changed ? `<li><strong>Changed:</strong> ${item.changed}</li>` : ''}
+            ${item.removed ? `<li><strong>Removed:</strong> ${item.removed}</li>` : ''}
+          </ul>
+        `).join('');
+        document.getElementById('updateLog').innerHTML = log;
+
+        // Show badge if unseen
+        const seen = localStorage.getItem('seenVersion');
+        if (seen !== latestVersion) {
+          document.getElementById('notification').style.display = 'inline-block';
+        }
+      });
+  </script>
 </body>
 </html>
