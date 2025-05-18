@@ -9,19 +9,12 @@
   <title>Hello PWA</title>
 </head>
 <body>
-  <h1>Your phone now has cancer 😞<h1>
-    <p>and I got a copy of your social security number</p>
-
+  <canvas id="pongCanvas" width="800" height="600"></canvas>
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/ChakaPWAng/service-worker.js')
-        .then(function(registration) {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(function(error) {
-          console.log('Service Worker registration failed:', error);
-        });
-    }
+    const canvas = document.getElementById("pongCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "black";
+    ctx.fillRect(100, 100, 100, 100); // just a test square
   </script>
 </body>
 </html>
