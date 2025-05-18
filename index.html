@@ -72,42 +72,65 @@
     <div id="updateLog"></div>
   </div>
 
-  <script>
-    // Toggle menu
-    document.getElementById('menuBtn').onclick = () => {
-      const menu = document.getElementById('menu');
-      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    };
+ <script>
+  const menuBtn = document.getElementById('menuBtn');
+  const menu = document.getElementById('menu');
+  const content = document.getElementById('content');
+  const updates = document.getElementById('updates');
+  const notification = document.getElementById('notification');
 
-    // Show updates and hide badge
-    function showUpdates() {
-      document.getElementById('content').style.display = 'none';
-      document.getElementById('updates').style.display = 'block';
-      document.getElementById('notification').style.display = 'none';
-      localStorage.setItem('seenVersion', latestVersion); // mark as seen
+  let updatesVisible = false;
+  let menuVisible = false;
+  const latestVersion = '1.0.0'; // update this per version
+
+  // Toggle menu and reset view
+  menuBtn.onclick = () => {
+    if (menuVisible || updatesVisible) {
+      menu.style.display = 'none';
+      updates.style.display = 'none';
+      content.style.display = 'block';
+      menuVisible = false;
+      updatesVisible = false;
+    } else {
+      menu.style.display = 'block';
+      menuVisible = true;
     }
+  };
 
-    // Simulate loading changelog
-    const latestVersion = '1.0.0'; // change this when you release
-    fetch('/ChakaPWAng/changelog.json')
-      .then(res => res.json())
-      .then(data => {
-        const log = data.changelog.map(item => `
-          <h3>Version ${item.version}</h3>
-          <ul>
-            ${item.added ? `<li><strong>Added:</strong> ${item.added}</li>` : ''}
-            ${item.changed ? `<li><strong>Changed:</strong> ${item.changed}</li>` : ''}
-            ${item.removed ? `<li><strong>Removed:</strong> ${item.removed}</li>` : ''}
-          </ul>
-        `).join('');
-        document.getElementById('updateLog').innerHTML = log;
+  // Toggle updates tab
+  function showUpdates() {
+    if (!updatesVisible) {
+      content.style.display = 'none';
+      updates.style.display = 'block';
+      notification.style.display = 'none';
+      localStorage.setItem('seenVersion', latestVersion);
+      updatesVisible = true;
+    } else {
+      updates.style.display = 'none';
+      content.style.display = 'block';
+      updatesVisible = false;
+    }
+  }
 
-        // Show badge if unseen
-        const seen = localStorage.getItem('seenVersion');
-        if (seen !== latestVersion) {
-          document.getElementById('notification').style.display = 'inline-block';
-        }
-      });
-  </script>
+  // Load changelog
+  fetch('/ChakaPWAng/changelog.json')
+    .then(res => res.json())
+    .then(data => {
+      const log = data.changelog.map(item => `
+        <h3>Version ${item.version}</h3>
+        <ul>
+          ${item.added ? `<li><strong>Added:</strong> ${item.added}</li>` : ''}
+          ${item.changed ? `<li><strong>Changed:</strong> ${item.changed}</li>` : ''}
+          ${item.removed ? `<li><strong>Removed:</strong> ${item.removed}</li>` : ''}
+        </ul>
+      `).join('');
+      document.getElementById('updateLog').innerHTML = log;
+
+      const seen = localStorage.getItem('seenVersion');
+      if (seen !== latestVersion) {
+        notification.style.display = 'inline-block';
+      }
+    });
+</script>
 </body>
 </html>
