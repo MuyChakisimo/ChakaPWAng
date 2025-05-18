@@ -1,6 +1,6 @@
 {
   "name": "ChakaPong",
-  "short_name": "Pong",
+  "short_name": "MuyChakaApp",
   "start_url": "/ChakaPWAng/index.html",
   "scope": "/ChakaPWAng/",
   "display": "standalone",
