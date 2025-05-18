@@ -1,0 +1,10 @@
+{
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "added": "Initial PWA setup with offline support.",
+      "changed": "Basic design and menu layout.",
+      "removed": ""
+    }
+  ]
+}
