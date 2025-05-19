@@ -1,43 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Banana Run</title>
-  <link rel="stylesheet" href="/ChakaPWAng/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#111">
+  <title>ChakaPong</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+      background-color: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .button {
+      padding: 1rem 2rem;
+      margin: 1rem;
+      font-size: 1.5rem;
+      background-color: #1e90ff;
+      border: none;
+      border-radius: 1rem;
+      color: white;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #63b3ed;
+    }
+
+    @media screen and (orientation: portrait) {
+      body {
+        font-size: 16px;
+      }
+    }
+
+    @media screen and (orientation: landscape) {
+      #content {
+        max-width: 600px;
+        margin: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-
-  <!-- Game Canvas -->
-  <canvas id="gameCanvas"></canvas>
-
-  <!-- Jump Button -->
-  <button id="jumpBtn"></button>
-
-  <!-- Pause Button -->
-  <button id="pauseBtn">⏸️</button>
-
-  <!-- Pause Menu -->
-  <div id="pauseMenu" class="hidden">
-    <h2>Paused</h2>
-    <button onclick="resumeGame()">Continue</button>
-    <button onclick="window.location.href='index.html'">Main Menu</button>
+  <div id="content">
+    <h1>🏓 ChakaPong</h1>
+    <button class="button" onclick="location.href='minigame.html'">🐵 Banana Run</button>
   </div>
-
-  <!-- Countdown Overlay -->
-  <div id="countdownOverlay" class="overlay">
-    <div id="countdownText">3</div>
-  </div>
-
-  <!-- Game Over Overlay -->
-  <div id="gameOverScreen" class="hidden">
-    <h2>Game Over!</h2>
-    <p id="finalScore">Your Score: 0</p>
-    <div id="highScores"></div>
-    <button onclick="location.reload()">Replay</button>
-    <button onclick="window.location.href='index.html'">Main Menu</button>
-  </div>
-
-  <script src="/ChakaPWAng/game.js"></script>
 </body>
 </html>
