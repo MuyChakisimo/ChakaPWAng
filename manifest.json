@@ -4,6 +4,7 @@
   "start_url": "/ChakaPWAng/index.html",
   "scope": "/ChakaPWAng/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
