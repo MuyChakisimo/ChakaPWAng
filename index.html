@@ -2,148 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#317EFB" />
-  <link rel="manifest" href="/ChakaPWAng/manifest.json" />
-  <link rel="icon" href="/ChakaPWAng/icon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>MuyChakaApp</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
   <style>
     body {
-      font-family: sans-serif;
       margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #317EFB;
-      color: white;
-      padding: 10px;
+      font-family: system-ui, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+      background: #111;
+      color: #fff;
       display: flex;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      height: 100dvh;
     }
-    #menuBtn {
-      font-size: 24px;
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .menu button {
+      font-size: 1.2rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      background: #333;
+      color: white;
       cursor: pointer;
-      margin-right: 10px;
     }
-    #notification {
+
+    .menu button:hover {
+      background: #444;
+    }
+
+    #updates-bubble {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
       background: red;
       color: white;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      font-size: 12px;
-      display: inline-block;
-      text-align: center;
-      line-height: 16px;
-      margin-left: 6px;
-    }
-    #menu {
-      background: #f0f0f0;
-      padding: 10px;
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
       display: none;
     }
-    #updates {
+
+    #updates-tab.opened + #updates-bubble {
       display: none;
-      padding: 10px;
+    }
+
+    #updates-tab:not(.opened) + #updates-bubble {
+      display: inline;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div id="menuBtn">☰</div>
-    <h1>MuyChakaApp</h1>
-  </header>
-
-  <div id="menu">
-    <div onclick="showUpdates()">Updates
-      <span id="notification" style="display: none;">●</span>
-    </div>
+  <h1>MuyChakaApp 🐒</h1>
+  <div class="menu">
+    <button onclick="location.href='minigame.html'">Play Banana Run 🍌</button>
+    <button id="updates-tab" onclick="openUpdates()">Updates 🔔</button>
+    <span id="updates-bubble">1</span>
   </div>
 
-  <div id="content">
-  <p>Welcome!</p>
-  <p>Hit the share button & add to your home screen</p>
-  <p>App should still become available offline</p>
-  <p>Fanny <br>
-  mankee</p>
-  
-  <!-- 🐵 GIF Example -->
-  <img src="/ChakaPWAng/monkey.gif" style="max-width: 100%; height: auto;" />
-
-  <p>🐵</p>
-
-  <!-- Game Button -->
-  <div style="text-align:center; margin: 20px;">
-    <button onclick="location.href='minigame.html'" style="padding: 10px 20px; font-size: 16px;">
-      🐒 Play Banana Run
-    </button>
-  </div>
-</div>
-
-  <div id="updates">
-    <h2>Update History</h2>
-    <div id="updateLog"></div>
+  <div id="updates-panel" style="display:none; margin-top:1rem;">
+    <p><strong>Version:</strong> 1.0.1</p>
+    <p>🆕 Added Banana Run! 🐵🍌</p>
   </div>
 
- <script>
-  const menuBtn = document.getElementById('menuBtn');
-  const menu = document.getElementById('menu');
-  const content = document.getElementById('content');
-  const updates = document.getElementById('updates');
-  const notification = document.getElementById('notification');
-
-  let updatesVisible = false;
-  let menuVisible = false;
-  const latestVersion = '1.0.0'; // update this per version
-
-  // Toggle menu and reset view
-  menuBtn.onclick = () => {
-    if (menuVisible || updatesVisible) {
-      menu.style.display = 'none';
-      updates.style.display = 'none';
-      content.style.display = 'block';
-      menuVisible = false;
-      updatesVisible = false;
-    } else {
-      menu.style.display = 'block';
-      menuVisible = true;
+  <script>
+    function openUpdates() {
+      const tab = document.getElementById('updates-tab');
+      const panel = document.getElementById('updates-panel');
+      tab.classList.add('opened');
+      panel.style.display = 'block';
     }
-  };
-
-  // Toggle updates tab
-  function showUpdates() {
-    if (!updatesVisible) {
-      content.style.display = 'none';
-      updates.style.display = 'block';
-      notification.style.display = 'none';
-      localStorage.setItem('seenVersion', latestVersion);
-      updatesVisible = true;
-    } else {
-      updates.style.display = 'none';
-      content.style.display = 'block';
-      updatesVisible = false;
-    }
-  }
-
-  // Load changelog
-  fetch('/ChakaPWAng/changelog.json')
-    .then(res => res.json())
-    .then(data => {
-      const log = data.changelog.map(item => `
-        <h3>Version ${item.version}</h3>
-        <ul>
-          ${item.added ? `<li><strong>Added:</strong> ${item.added}</li>` : ''}
-          ${item.changed ? `<li><strong>Changed:</strong> ${item.changed}</li>` : ''}
-          ${item.removed ? `<li><strong>Removed:</strong> ${item.removed}</li>` : ''}
-        </ul>
-      `).join('');
-      document.getElementById('updateLog').innerHTML = log;
-
-      const seen = localStorage.getItem('seenVersion');
-      if (seen !== latestVersion) {
-        notification.style.display = 'inline-block';
-      }
-    });
-</script>
+  </script>
 </body>
 </html>
