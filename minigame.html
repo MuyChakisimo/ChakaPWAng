@@ -3,123 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Banana Run 🍌</title>
+  <title>HaRUNbe</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      width: 100dvw;
-      height: 100dvh;
-      background: #111;
-      font-family: system-ui, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
-      touch-action: none;
-    }
-
-    #game-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    canvas {
-      display: block;
-    }
-
-    #jumpBtn, #pauseBtn {
-      position: absolute;
-      bottom: 1rem;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.5rem;
-      background: #ffeb3b;
-      color: #000;
-      z-index: 10;
-    }
-
-    #jumpBtn {
-      left: 1rem;
-    }
-
-    #pauseBtn {
-      right: 1rem;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    #pauseMenu, #countdownOverlay, #gameOverScreen {
-      position: absolute;
-      z-index: 20;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.75);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      text-align: center;
-    }
-
-    #countdownText {
-      font-size: 4rem;
-    }
-
-    button.menuBtn {
-      font-size: 1.2rem;
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      background: white;
-      color: black;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
+    body {
+      background: black;
     }
   </style>
 </head>
 <body>
   <div id="game-container">
     <canvas id="gameCanvas"></canvas>
-    <button id="jumpBtn">🦘 Jump</button>
+    <button id="jumpBtn"></button>
     <button id="pauseBtn">⏸️</button>
 
-    <div id="countdownOverlay" class="hidden">
-      <div id="countdownText">3</div>
-    </div>
-
     <div id="pauseMenu" class="hidden">
-      <p>Paused</p>
-      <button class="menuBtn" onclick="resumeGame()">▶️ Continue</button>
-      <button class="menuBtn" onclick="location.href='index.html'">🏠 Main Menu</button>
+      <p>Game Paused</p>
+      <button id="continueBtn">Continue</button>
+      <button id="mainMenuBtn">Back to Main Menu</button>
     </div>
 
     <div id="gameOverScreen" class="hidden">
-      <p id="finalScore">Your Score: 0</p>
-      <div id="highScores"></div>
-      <button class="menuBtn" onclick="location.reload()">🔁 Replay</button>
-      <button class="menuBtn" onclick="location.href='index.html'">🏠 Main Menu</button>
+      <p>Game Over</p>
+      <div id="scoreList"></div>
+      <button id="restartBtn">Play Again</button>
+      <button id="mainMenuBtn2">Back to Main Menu</button>
+    </div>
+
+    <div id="countdown" class="overlay hidden">
+      <div id="countdownText"></div>
     </div>
   </div>
 
   <script>
-    // Try orientation lock after gesture
-    document.addEventListener('DOMContentLoaded', () => {
-      document.body.addEventListener('click', () => {
-        if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(err => {
-            console.warn('Orientation lock failed:', err);
-          });
-        }
-      }, { once: true });
-    });
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(err => {
+        console.warn('Orientation lock failed:', err);
+      });
+    }
   </script>
-
   <script src="game.js"></script>
 </body>
 </html>
