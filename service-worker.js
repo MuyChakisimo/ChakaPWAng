@@ -6,9 +6,9 @@ const FILES_TO_CACHE = [
   '/ChakaPWAng/manifest.json',
   '/ChakaPWAng/icon.png',
   '/ChakaPWAng/monkey.gif',
-  '/ChakaPWAng/changelog.json',
-  '/ChakaPWAng/style.css',    
-  '/ChakaPWAng/game.js'       
+  '/ChakaPWAng/changes.json',
+  '/ChakaPWAng/styles.css',       // ✅ fixed file name
+  '/ChakaPWAng/game.js'
 ];
 
 self.addEventListener('install', event => {
@@ -25,12 +25,14 @@ self.addEventListener('activate', event => {
   console.log('[ServiceWorker] Activate');
   event.waitUntil(
     caches.keys().then(keyList => {
-      return Promise.all(keyList.map(key => {
-        if (key !== CACHE_NAME) {
-          console.log('[ServiceWorker] Removing old cache', key);
-          return caches.delete(key);
-        }
-      }));
+      return Promise.all(
+        keyList.map(key => {
+          if (key !== CACHE_NAME) {
+            console.log('[ServiceWorker] Removing old cache', key);
+            return caches.delete(key);
+          }
+        })
+      );
     })
   );
   self.clients.claim();
