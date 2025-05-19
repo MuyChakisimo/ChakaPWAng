@@ -4,10 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Banana Run</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🍌 Banana Run</h1>
-  <p>Mini-game coming soon...</p>
-  <button onclick="location.href='index.html'">Back to Main Menu</button>
+  <div id="game">
+    <div id="monkey">🐵</div>
+    <div id="score">🍌 0</div>
+    <div id="gameOver" class="hidden">
+      <h2>Game Over!</h2>
+      <div id="highScores"></div>
+      <button onclick="startGame()">🔁 Replay</button>
+      <button onclick="location.href='index.html'">🏠 Main Menu</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
 </body>
 </html>
