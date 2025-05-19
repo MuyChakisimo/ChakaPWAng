@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>HaRUNbe Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+    <button id="jumpBtn"></button>
+    <button id="menuBtn">☰</button>
+
+    <div id="pauseMenu" class="hidden">
+      <button onclick="resumeGame()">Continue</button>
+      <button onclick="goToMenu()">Back to Menu</button>
+    </div>
+
+    <div id="gameOverScreen" class="hidden">
+      <h2>Game Over</h2>
+      <p>Your Score: <span id="currentScore">0</span></p>
+      <h3>Top 5 Scores</h3>
+      <ol id="highScores"></ol>
+      <button onclick="restartGame()">Play Again</button>
+      <button onclick="goToMenu()">Main Menu</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
