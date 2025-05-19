@@ -16,22 +16,26 @@ const maxJumpVelocity = -20;
 let spawnTimer = 0;
 let speedMultiplier = 1;
 
+const groundY = canvas.height - 150;
+
 const gorilla = {
   x: 100,
-  y: canvas.height - 150,
+  y: groundY,
   width: 50,
   height: 50,
   vy: 0,
-  onGround: true,
   color: 'white',
   update() {
     this.vy += gravity;
     this.y += this.vy;
-    if (this.y >= canvas.height - 150) {
-      this.y = canvas.height - 150;
+
+    if (this.y >= groundY) {
+      this.y = groundY;
       this.vy = 0;
-      this.onGround = true;
     }
+  },
+  isOnGround() {
+    return this.y >= groundY;
   },
   draw() {
     ctx.font = '40px serif';
@@ -49,7 +53,7 @@ let score = 0;
 function spawnEnemy() {
   if (enemies.length >= 2) return;
   const type = Math.random() < 0.5 ? 'tiger' : 'hawk';
-  const y = type === 'tiger' ? canvas.height - 150 : 100 + Math.random() * 100;
+  const y = type === 'tiger' ? groundY : 100 + Math.random() * 100;
   enemies.push({
     x: canvas.width + 50,
     y,
@@ -73,7 +77,7 @@ function spawnBanana() {
 function resetGame() {
   enemies.length = 0;
   bananas.length = 0;
-  gorilla.y = canvas.height - 150;
+  gorilla.y = groundY;
   gorilla.vy = 0;
   score = 0;
   speedMultiplier = 1;
@@ -100,9 +104,9 @@ function drawBackground() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.fillStyle = 'green';
-  ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
+  ctx.fillRect(0, groundY + 50, canvas.width, 100);
   ctx.font = '20px serif';
-  ctx.fillText('🌱'.repeat(Math.floor(canvas.width / 20)), 0, canvas.height - 70);
+  ctx.fillText('🌱'.repeat(Math.floor(canvas.width / 20)), 0, groundY + 80);
 }
 
 function drawUI() {
@@ -169,21 +173,22 @@ function gameLoop() {
 }
 
 // Touch controls
-canvas.addEventListener('touchstart', e => {
+canvas.addEventListener('touchstart', (e) => {
   if (!gameRunning) {
     resetGame();
     return;
   }
-  if (!gorilla.onGround) return;
-  jumpStartTime = Date.now();
+
+  if (gorilla.isOnGround()) {
+    jumpStartTime = Date.now();
+  }
 });
 
-canvas.addEventListener('touchend', e => {
-  if (jumpStartTime && gorilla.onGround) {
+canvas.addEventListener('touchend', (e) => {
+  if (jumpStartTime && gorilla.isOnGround()) {
     const heldTime = Math.min(Date.now() - jumpStartTime, maxJumpTime);
     const power = heldTime / maxJumpTime;
     gorilla.vy = maxJumpVelocity * power;
-    gorilla.onGround = false;
   }
   jumpStartTime = null;
 });
