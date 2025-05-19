@@ -13,31 +13,113 @@
       height: 100dvh;
       background: #111;
       font-family: system-ui, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+      touch-action: none;
     }
 
     #game-container {
+      position: relative;
       width: 100%;
       height: 100%;
-      position: relative;
     }
 
     canvas {
       display: block;
     }
+
+    #jumpBtn, #pauseBtn {
+      position: absolute;
+      bottom: 1rem;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.5rem;
+      background: #ffeb3b;
+      color: #000;
+      z-index: 10;
+    }
+
+    #jumpBtn {
+      left: 1rem;
+    }
+
+    #pauseBtn {
+      right: 1rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #pauseMenu, #countdownOverlay, #gameOverScreen {
+      position: absolute;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.75);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    #countdownText {
+      font-size: 4rem;
+    }
+
+    button.menuBtn {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div id="game-container">
-    <!-- Your canvas game will go here -->
     <canvas id="gameCanvas"></canvas>
+    <button id="jumpBtn">🦘 Jump</button>
+    <button id="pauseBtn">⏸️</button>
+
+    <div id="countdownOverlay" class="hidden">
+      <div id="countdownText">3</div>
+    </div>
+
+    <div id="pauseMenu" class="hidden">
+      <p>Paused</p>
+      <button class="menuBtn" onclick="resumeGame()">▶️ Continue</button>
+      <button class="menuBtn" onclick="location.href='index.html'">🏠 Main Menu</button>
+    </div>
+
+    <div id="gameOverScreen" class="hidden">
+      <p id="finalScore">Your Score: 0</p>
+      <div id="highScores"></div>
+      <button class="menuBtn" onclick="location.reload()">🔁 Replay</button>
+      <button class="menuBtn" onclick="location.href='index.html'">🏠 Main Menu</button>
+    </div>
   </div>
 
   <script>
-    if (screen.orientation && screen.orientation.lock) {
-      screen.orientation.lock('landscape').catch(err => {
-        console.warn('Orientation lock failed:', err);
-      });
-    }
+    // Try orientation lock after gesture
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.addEventListener('click', () => {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(err => {
+            console.warn('Orientation lock failed:', err);
+          });
+        }
+      }, { once: true });
+    });
   </script>
+
+  <script src="game.js"></script>
 </body>
 </html>
