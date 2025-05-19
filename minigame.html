@@ -1,76 +1,43 @@
-<!-- /ChakaPWAng/minigame.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, orientation=landscape" />
-<style>
-  body, html {
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-</style>
-  
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Banana Run</title>
   <link rel="stylesheet" href="/ChakaPWAng/style.css" />
 </head>
 <body>
-  
-  <canvas id="gameCanvas" style="position:absolute; top:0; left:0;"></canvas>
+
+  <!-- Game Canvas -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- Jump Button -->
+  <button id="jumpBtn"></button>
+
+  <!-- Pause Button -->
+  <button id="pauseBtn">⏸️</button>
+
+  <!-- Pause Menu -->
+  <div id="pauseMenu" class="hidden">
+    <h2>Paused</h2>
+    <button onclick="resumeGame()">Continue</button>
+    <button onclick="window.location.href='index.html'">Main Menu</button>
+  </div>
+
+  <!-- Countdown Overlay -->
+  <div id="countdownOverlay" class="overlay">
+    <div id="countdownText">3</div>
+  </div>
+
+  <!-- Game Over Overlay -->
+  <div id="gameOverScreen" class="hidden">
+    <h2>Game Over!</h2>
+    <p id="finalScore">Your Score: 0</p>
+    <div id="highScores"></div>
+    <button onclick="location.reload()">Replay</button>
+    <button onclick="window.location.href='index.html'">Main Menu</button>
+  </div>
 
   <script src="/ChakaPWAng/game.js"></script>
-
-  <!-- Jump Button (fills most of screen) -->
-<button id="jumpBtn" style="
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 60%;
-  background: transparent;
-  z-index: 10;
-  border: none;
-"></button>
-
-<!-- Pause Button (top-left) -->
-<button id="pauseBtn" style="
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 50px;
-  height: 50px;
-  background: rgba(0,0,0,0.5);
-  color: white;
-  font-size: 24px;
-  z-index: 11;
-  border: none;
-  border-radius: 10px;
-">⏸️</button>
-
-<!-- Pause Menu -->
-<div id="pauseMenu" class="hidden" style="
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  text-align: center;
-  z-index: 20;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-">
-  <h2>Paused</h2>
-  <button onclick="resumeGame()">Continue</button>
-  <button onclick="window.location.href='index.html'">Main Menu</button>
-</div>
-
 </body>
 </html>
