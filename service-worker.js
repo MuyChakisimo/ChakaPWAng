@@ -2,10 +2,13 @@ const CACHE_NAME = 'chaka-cache-v1';
 const FILES_TO_CACHE = [
   '/ChakaPWAng/',
   '/ChakaPWAng/index.html',
+  '/ChakaPWAng/minigame.html',
   '/ChakaPWAng/manifest.json',
   '/ChakaPWAng/icon.png',
-  '/ChakaPWAng/changelog.json',
   '/ChakaPWAng/monkey.gif',
+  '/ChakaPWAng/changelog.json',
+  '/ChakaPWAng/style.css',    
+  '/ChakaPWAng/game.js'       
 ];
 
 self.addEventListener('install', event => {
