@@ -1,23 +1,14 @@
+<!-- /ChakaPWAng/minigame.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Banana Run</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/ChakaPWAng/style.css" />
 </head>
 <body>
-  <div id="game">
-    <div id="monkey">🐵</div>
-    <div id="score">🍌 0</div>
-    <div id="gameOver" class="hidden">
-      <h2>Game Over!</h2>
-      <div id="highScores"></div>
-      <button onclick="startGame()">🔁 Replay</button>
-      <button onclick="location.href='index.html'">🏠 Main Menu</button>
-    </div>
-  </div>
-
-  <script src="game.js"></script>
+  <canvas id="game"></canvas>
+  <script src="/ChakaPWAng/game.js"></script>
 </body>
 </html>
