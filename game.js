@@ -1,132 +1,167 @@
-// game.js
-
-const canvas = document.getElementById('game');
+const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+canvas.width = window.innerHeight;
+canvas.height = window.innerWidth;
 
-canvas.width = 320;
-canvas.height = 240;
+let gameStarted = false;
+let gameOver = false;
+let paused = false;
 
-let monkey = { x: 50, y: 180, width: 24, height: 24, vy: 0, onGround: true };
-let bananas = [];
+// Monkey properties
+const monkey = {
+  x: 50,
+  y: 180,
+  vy: 0,
+  width: 40,
+  height: 40,
+  onGround: true
+};
+
+const gravity = 0.5;
+const jumpStrength = -10;
+
+// Touch jump logic
+let jumpHoldStart = 0;
+document.getElementById('jumpBtn').addEventListener('touchstart', (e) => {
+  if (!gameStarted || gameOver || paused) return;
+  e.preventDefault();
+  jumpHoldStart = Date.now();
+});
+
+document.getElementById('jumpBtn').addEventListener('touchend', (e) => {
+  if (!gameStarted || gameOver || paused) return;
+  e.preventDefault();
+  const holdDuration = Date.now() - jumpHoldStart;
+  const jumpForce = Math.max(jumpStrength, jumpStrength * (holdDuration / 100));
+  if (monkey.onGround) {
+    monkey.vy = jumpForce;
+    monkey.onGround = false;
+  }
+});
+
+// Pause logic
+document.getElementById('pauseBtn').addEventListener('click', () => {
+  if (!gameStarted || gameOver) return;
+  paused = true;
+  document.getElementById('pauseMenu').classList.remove('hidden');
+});
+
+function resumeGame() {
+  paused = false;
+  document.getElementById('pauseMenu').classList.add('hidden');
+  loop();
+}
+
+// Enemies
 let lions = [];
 let hawks = [];
-let score = 0;
-let speed = 2;
-let gravity = 0.8;
-let jumpStrength = -12;
-let gameOver = false;
+let lastLionX = -999;
+let lastHawkX = -999;
 
-let highScores = JSON.parse(localStorage.getItem('bananaHighScores')) || [];
-
-function drawEmoji(x, y, emoji) {
-  ctx.font = '20px Arial';
-  ctx.fillText(emoji, x, y);
-}
-
-function spawnBanana() {
-  bananas.push({ x: canvas.width, y: 160 });
-}
 function spawnLion() {
-  lions.push({ x: canvas.width, y: 180 });
+  if (canvas.width - lastLionX > 120) {
+    lions.push({ x: canvas.width, y: 180, width: 40, height: 40 });
+    lastLionX = canvas.width;
+  }
 }
 function spawnHawk() {
-  hawks.push({ x: canvas.width, y: 100 });
+  if (canvas.width - lastHawkX > 150) {
+    hawks.push({ x: canvas.width, y: 100, width: 40, height: 40 });
+    lastHawkX = canvas.width;
+  }
 }
 
 function update() {
-  if (gameOver) return;
-
+  // Gravity
   monkey.vy += gravity;
   monkey.y += monkey.vy;
+
+  // Ground collision
   if (monkey.y >= 180) {
     monkey.y = 180;
     monkey.vy = 0;
     monkey.onGround = true;
   }
 
-  bananas.forEach(b => b.x -= speed);
-  lions.forEach(l => l.x -= speed);
-  hawks.forEach(h => h.x -= speed + 1);
+  // Move enemies
+  lions.forEach(l => l.x -= 5);
+  hawks.forEach(h => h.x -= 7);
 
-  bananas = bananas.filter(b => b.x > -20);
-  lions = lions.filter(l => l.x > -20);
-  hawks = hawks.filter(h => h.x > -20);
+  // Remove off-screen
+  lions = lions.filter(l => l.x + l.width > 0);
+  hawks = hawks.filter(h => h.x + h.width > 0);
 
-  bananas.forEach(b => {
-    if (Math.abs(monkey.x - b.x) < 20 && Math.abs(monkey.y - b.y) < 20) {
-      score++;
-      bananas.splice(bananas.indexOf(b), 1);
-      if (score % 5 === 0) speed += 0.5;
-    }
-  });
-
-  lions.concat(hawks).forEach(obstacle => {
-    if (Math.abs(monkey.x - obstacle.x) < 20 && Math.abs(monkey.y - obstacle.y) < 20) {
-      endGame();
-    }
-  });
-
-  if (Math.random() < 0.02) spawnBanana();
-  if (Math.random() < 0.01) spawnLion();
+  // Spawn
+  if (Math.random() < 0.02) spawnLion();
   if (Math.random() < 0.01) spawnHawk();
+
+  // Collision
+  [...lions, ...hawks].forEach(enemy => {
+    if (
+      monkey.x < enemy.x + enemy.width &&
+      monkey.x + monkey.width > enemy.x &&
+      monkey.y < enemy.y + enemy.height &&
+      monkey.y + monkey.height > enemy.y
+    ) {
+      gameOver = true;
+    }
+  });
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawEmoji(monkey.x, monkey.y, '🐵');
 
-  bananas.forEach(b => drawEmoji(b.x, b.y, '🍌'));
-  lions.forEach(l => drawEmoji(l.x, l.y, '🦁'));
-  hawks.forEach(h => drawEmoji(h.x, h.y, '🦅'));
+  // Background
+  ctx.fillStyle = '#e0f7fa';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = 'black';
-  ctx.font = '16px sans-serif';
-  ctx.fillText('Score: ' + score, 10, 20);
-}
+  // Monkey
+  ctx.fillStyle = '#ff9800';
+  ctx.fillRect(monkey.x, monkey.y, monkey.width, monkey.height);
 
-function endGame() {
-  gameOver = true;
-  highScores.push(score);
-  highScores = highScores.sort((a, b) => b - a).slice(0, 5);
-  localStorage.setItem('bananaHighScores', JSON.stringify(highScores));
-  setTimeout(showGameOverScreen, 500);
-}
+  // Enemies
+  ctx.fillStyle = '#e53935';
+  lions.forEach(l => ctx.fillRect(l.x, l.y, l.width, l.height));
+  ctx.fillStyle = '#1e88e5';
+  hawks.forEach(h => ctx.fillRect(h.x, h.y, h.width, h.height));
 
-function showGameOverScreen() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = 'black';
-  ctx.font = '18px sans-serif';
-  ctx.fillText('Game Over!', 100, 50);
-  ctx.fillText('Your Score: ' + score, 90, 80);
-  ctx.fillText('Top 5:', 120, 110);
-  highScores.forEach((s, i) => {
-    ctx.fillText(`${i + 1}. ${s}`, 140, 130 + i * 20);
-  });
-
-  ctx.fillText('[R] Replay', 100, 230);
-  ctx.fillText('[M] Menu', 180, 230);
+  // Game over text
+  if (gameOver) {
+    ctx.fillStyle = 'black';
+    ctx.font = '40px sans-serif';
+    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+  }
 }
 
 function loop() {
+  if (!gameStarted || gameOver || paused) return;
   update();
   draw();
-  if (!gameOver) requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
 }
 
-document.addEventListener('keydown', e => {
-  if ((e.code === 'Space' || e.code === 'ArrowUp') && monkey.onGround) {
-    monkey.vy = jumpStrength;
-    monkey.onGround = false;
-  }
-  if (gameOver) {
-    if (e.key.toLowerCase() === 'r') {
-      location.reload();
-    }
-    if (e.key.toLowerCase() === 'm') {
-      window.location.href = 'index.html';
-    }
-  }
-});
+// Countdown before game starts
+let countdown = 3;
+function drawCountdown() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'black';
+  ctx.font = '72px sans-serif';
+  ctx.fillText(countdown > 0 ? countdown : 'Go!', canvas.width / 2 - 50, canvas.height / 2);
+}
 
-loop();
+function preGameLoop() {
+  drawCountdown();
+  if (countdown > 0) {
+    setTimeout(() => {
+      countdown--;
+      preGameLoop();
+    }, 1000);
+  } else {
+    setTimeout(() => {
+      gameStarted = true;
+      loop();
+    }, 1000);
+  }
+}
 
+preGameLoop();
