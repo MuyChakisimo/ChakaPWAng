@@ -1,11 +1,13 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerHeight;
-canvas.height = window.innerWidth;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 let gameStarted = false;
 let gameOver = false;
 let paused = false;
+let score = 0;
+let highScores = JSON.parse(localStorage.getItem('bananaHighScores') || '[]');
 
 // Monkey properties
 const monkey = {
@@ -104,33 +106,30 @@ function update() {
       monkey.y + monkey.height > enemy.y
     ) {
       gameOver = true;
+      endGame();
     }
   });
+
+  // Score
+  score++;
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Background
   ctx.fillStyle = '#e0f7fa';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Monkey
   ctx.fillStyle = '#ff9800';
   ctx.fillRect(monkey.x, monkey.y, monkey.width, monkey.height);
 
-  // Enemies
   ctx.fillStyle = '#e53935';
   lions.forEach(l => ctx.fillRect(l.x, l.y, l.width, l.height));
   ctx.fillStyle = '#1e88e5';
   hawks.forEach(h => ctx.fillRect(h.x, h.y, h.width, h.height));
 
-  // Game over text
-  if (gameOver) {
-    ctx.fillStyle = 'black';
-    ctx.font = '40px sans-serif';
-    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
-  }
+  ctx.fillStyle = 'black';
+  ctx.font = '20px sans-serif';
+  ctx.fillText('Score: ' + score, 10, 30);
 }
 
 function loop() {
@@ -140,15 +139,29 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-// Countdown before game starts
-let countdown = 3;
 function drawCountdown() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = 'black';
-  ctx.font = '72px sans-serif';
-  ctx.fillText(countdown > 0 ? countdown : 'Go!', canvas.width / 2 - 50, canvas.height / 2);
+  const overlay = document.getElementById('countdownOverlay');
+  const text = document.getElementById('countdownText');
+  overlay.classList.remove('hidden');
+  text.textContent = countdown > 0 ? countdown : 'Go!';
 }
 
+function endGame() {
+  document.getElementById('gameOverScreen').classList.remove('hidden');
+  document.getElementById('finalScore').textContent = 'Your Score: ' + score;
+
+  // Save score
+  highScores.push(score);
+  highScores.sort((a, b) => b - a);
+  highScores = highScores.slice(0, 5);
+  localStorage.setItem('bananaHighScores', JSON.stringify(highScores));
+
+  const list = highScores.map((s, i) => `<p>#${i + 1}: ${s}</p>`).join('');
+  document.getElementById('highScores').innerHTML = list;
+}
+
+// Countdown
+let countdown = 3;
 function preGameLoop() {
   drawCountdown();
   if (countdown > 0) {
@@ -158,6 +171,7 @@ function preGameLoop() {
     }, 1000);
   } else {
     setTimeout(() => {
+      document.getElementById('countdownOverlay').classList.add('hidden');
       gameStarted = true;
       loop();
     }, 1000);
