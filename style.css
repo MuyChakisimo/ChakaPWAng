@@ -46,6 +46,11 @@ canvas {
   cursor: pointer;
 }
 
+button:active {
+  transform: scale(0.98);
+  background: #ddd;
+}
+
 /* Pause Menu & Game Over */
 #pauseMenu,
 #gameOverScreen {
