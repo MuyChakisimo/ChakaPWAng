@@ -1,37 +1,36 @@
-/* Reset & Base Styles */
-body {
+body, html {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: sans-serif;
-  background: #cceeff;
+  background: black;
+}
+
+#game-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
 }
 
 canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
+  width: 100%;
+  height: 100%;
   display: block;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
+  background: url('yourBackground.png') no-repeat center center;
+  background-size: cover;
 }
 
-/* Jump Button */
 #jumpBtn {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60%;
+  height: 50%;
   background: transparent;
   border: none;
   z-index: 10;
-  cursor: pointer;
 }
 
-/* Pause Button */
-#pauseBtn {
+#menuBtn {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -43,59 +42,22 @@ canvas {
   background: rgba(0, 0, 0, 0.5);
   color: white;
   z-index: 11;
-  cursor: pointer;
 }
 
-button:active {
-  transform: scale(0.98);
-  background: #ddd;
-}
-
-/* Pause Menu & Game Over */
 #pauseMenu,
 #gameOverScreen {
   position: absolute;
   top: 30%;
   left: 50%;
-  transform: translate(-50%);
+  transform: translateX(-50%);
   background: white;
+  color: black;
   padding: 20px;
   border-radius: 15px;
   text-align: center;
   z-index: 20;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Countdown Overlay */
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 30;
-}
-
-#countdownText {
-  font-size: 72px;
-  font-weight: bold;
-  color: black;
-}
-
-/* Utility */
 .hidden {
   display: none;
-}
-
-button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
 }
